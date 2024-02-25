@@ -1,0 +1,21 @@
+name: tone_curve
+description: Components that can be used with Flutter to add tone curve functionality.
+version: 0.0.1
+repository: https://github.com/nat-s3/tone_curve
+issue_tracker: https://github.com/nat-s3/tone_curve/issues
+publish_to: 'none'
+
+environment:
+  sdk: '>=3.1.5 <4.0.0'
+  flutter: '>=3.13.9'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
