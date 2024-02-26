@@ -48,36 +48,66 @@ class ToneCurve extends StatefulWidget {
 /// The state of the tone curve widget.
 class _ToneCurveState extends State<ToneCurve> {
   /// The index of the anchor that is being moved.
-  int? moveTarget;
+  final moveTarget = ValueNotifier<int?>(null);
+
+  void notifyUpdate() {
+    widget.onUpdated?.call(
+      widget.model.samplings.yList(),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    widget.model.addListener(notifyUpdate);
+  }
+
+  @override
+  void dispose() {
+    widget.model.removeListener(notifyUpdate);
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = widget.scheme ?? Theme.of(context).colorScheme;
+
     return LayoutBuilder(
       builder: (context, layout) {
         // Calculate layout sizes
-        final paddingSize = widget.style.anchorRadius;
+        final paddingSize =
+            widget.style.anchorRadius + widget.style.anchorRadius / 6;
         final layoutSize = min(layout.maxWidth, layout.maxHeight);
         final size = layoutSize - paddingSize * 2;
 
         return GestureDetector(
           behavior: HitTestBehavior.opaque,
-          onPanEnd: (d) => setState(() => moveTarget = null),
-          onPanCancel: () => setState(() => moveTarget = null),
+          onPanEnd: (d) => moveTarget.value = null,
+          onPanCancel: () => moveTarget.value = null,
           onPanDown: (detail) => onPanDown(detail, paddingSize, size),
           onPanUpdate: (detail) => onPanUpdate(detail, paddingSize, size),
-          child: Padding(
-            padding: EdgeInsets.all(
-              widget.style.anchorRadius + widget.style.anchorRadius / 3,
-            ),
-            child: CustomPaint(
-              willChange: true,
-              painter: ToneCurvePainter(
-                model: widget.model,
-                style: widget.style,
-                scheme: widget.scheme ?? Theme.of(context).colorScheme,
-                holdAnchorIndex: moveTarget,
+          child: RepaintBoundary(
+            child: Padding(
+              padding: EdgeInsets.all(paddingSize),
+              child: ValueListenableBuilder(
+                valueListenable: moveTarget,
+                builder: (context, value, child) {
+                  return ListenableBuilder(
+                    listenable: widget.model,
+                    builder: (context, child) {
+                      return CustomPaint(
+                        painter: ToneCurvePainter(
+                          model: widget.model,
+                          style: widget.style,
+                          scheme: colorScheme,
+                          holdAnchorIndex: value,
+                        ),
+                        size: Size.square(size),
+                      );
+                    },
+                  );
+                },
               ),
-              size: Size.square(size),
             ),
           ),
         );
@@ -99,13 +129,13 @@ class _ToneCurveState extends State<ToneCurve> {
       final distance = (current - target).distance;
 
       if (distance < normalizedAnchorSize) {
-        moveTarget = idx;
+        moveTarget.value = idx;
       }
       vectors[idx] = target.x;
     }
 
     // Add data if the anchor is not being moved.
-    if (moveTarget == null) {
+    if (moveTarget.value == null) {
       int key = 0;
       for (final kv in vectors.entries) {
         if (kv.value < min(current.x, 1.0)) {
@@ -119,12 +149,11 @@ class _ToneCurveState extends State<ToneCurve> {
           key + 1,
           current,
         );
-      moveTarget = key + 1;
+      moveTarget.value = key + 1;
       widget.model.update(anchors: newAnchors);
       widget.onUpdated?.call(
         widget.model.samplings.yList(),
       );
-      setState(() {});
     }
   }
 
@@ -136,7 +165,7 @@ class _ToneCurveState extends State<ToneCurve> {
         x: (detail.localPosition.dx - paddingSize) / size,
         y: 1.0 - ((detail.localPosition.dy - paddingSize) / size),
       );
-      var currentTarget = moveTarget;
+      var currentTarget = moveTarget.value;
 
       if (currentTarget == null) {
         return;
@@ -149,7 +178,7 @@ class _ToneCurveState extends State<ToneCurve> {
       if (2 < anchors.length && minList != currentTarget) {
         final distance = (current - anchors[minList]).distance;
         if (distance <= normalizedRadius) {
-          moveTarget = minList;
+          moveTarget.value = minList;
           anchors.removeAt(currentTarget);
           currentTarget = minList;
         }
@@ -178,10 +207,6 @@ class _ToneCurveState extends State<ToneCurve> {
         );
       }
       widget.model.update(anchors: anchors);
-      widget.onUpdated?.call(
-        widget.model.samplings.yList(),
-      );
-      setState(() {});
     }
   }
 }

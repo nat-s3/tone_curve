@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:flutter/material.dart';
+
 import 'anchor.dart';
 import 'interpolate_model.dart';
 import 'options.dart';
@@ -9,7 +11,7 @@ import '../core/tone_curve_model.dart';
 
 /// DefaultToneCurveModel is a class that implements ToneCurveModel.
 /// Represents the default tone curve model.
-class DefaultToneCurveModel implements ToneCurveModel {
+class DefaultToneCurveModel extends ChangeNotifier implements ToneCurveModel {
   DefaultToneCurveModel({
     double curvature = 0.3,
     int outputPoints = 256,
@@ -105,5 +107,6 @@ class DefaultToneCurveModel implements ToneCurveModel {
     _samplings
       ..clear()
       ..addAll(points);
+    notifyListeners();
   }
 }

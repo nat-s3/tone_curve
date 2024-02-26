@@ -1,7 +1,9 @@
+import 'package:flutter/material.dart';
+
 import 'normalized_point.dart';
 
 /// This class represents a tone curve model
-abstract interface class ToneCurveModel {
+abstract interface class ToneCurveModel implements Listenable {
   /// update sampling model
   void update({
     double? curvature,
