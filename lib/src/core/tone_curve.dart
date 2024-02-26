@@ -75,7 +75,8 @@ class _ToneCurveState extends State<ToneCurve> {
     return LayoutBuilder(
       builder: (context, layout) {
         // Calculate layout sizes
-        final paddingSize = widget.style.anchorRadius;
+        final paddingSize =
+            widget.style.anchorRadius + widget.style.anchorRadius / 6;
         final layoutSize = min(layout.maxWidth, layout.maxHeight);
         final size = layoutSize - paddingSize * 2;
 
@@ -87,9 +88,7 @@ class _ToneCurveState extends State<ToneCurve> {
           onPanUpdate: (detail) => onPanUpdate(detail, paddingSize, size),
           child: RepaintBoundary(
             child: Padding(
-              padding: EdgeInsets.all(
-                widget.style.anchorRadius + widget.style.anchorRadius / 3,
-              ),
+              padding: EdgeInsets.all(paddingSize),
               child: ValueListenableBuilder(
                 valueListenable: moveTarget,
                 builder: (context, value, child) {
