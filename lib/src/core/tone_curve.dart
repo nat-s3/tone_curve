@@ -121,6 +121,9 @@ class _ToneCurveState extends State<ToneCurve> {
         );
       moveTarget = key + 1;
       widget.model.update(anchors: newAnchors);
+      widget.onUpdated?.call(
+        widget.model.samplings.yList(),
+      );
       setState(() {});
     }
   }
