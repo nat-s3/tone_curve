@@ -25,28 +25,28 @@ class Anchor {
   List<double> offset2real(
     double left,
     double top,
-    double VW,
-    double VH,
+    double viewWidth,
+    double viewHeight,
     double rangeX,
     double rangeY,
   ) {
     return [
-      option.x[0] + left * rangeX / VW,
-      option.y[0] + (VH - top) * rangeY / VH,
+      option.x[0] + left * rangeX / viewWidth,
+      option.y[0] + (viewHeight - top) * rangeY / viewHeight,
     ];
   }
 
   // Utility
   Map<String, double> real2offset(
     List<double> p,
-    double VW,
-    double VH,
+    double viewWidth,
+    double viewHeight,
     double rangeX,
     double rangeY,
   ) {
     return {
-      'left': (p[0] - option.x[0]) * VW / rangeX,
-      'top': (rangeY - (p[1] - option.y[0])) * VH / rangeY,
+      'left': (p[0] - option.x[0]) * viewWidth / rangeX,
+      'top': (rangeY - (p[1] - option.y[0])) * viewHeight / rangeY,
     };
   }
 }
