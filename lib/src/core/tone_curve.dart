@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'normalized_point.dart';
 import 'tone_curve_model.dart';
@@ -26,7 +26,6 @@ class ToneCurve extends StatefulWidget {
     required this.model,
     this.style = const ToneCurveStyle(),
     this.onUpdated,
-    this.scheme,
   });
 
   /// The style of the tone curve.
@@ -37,9 +36,6 @@ class ToneCurve extends StatefulWidget {
 
   /// A callback that is called when the tone curve is updated.
   final void Function(List<double>)? onUpdated;
-
-  /// The color scheme of the tone curve.
-  final ColorScheme? scheme;
 
   @override
   State<ToneCurve> createState() => _ToneCurveState();
@@ -70,8 +66,6 @@ class _ToneCurveState extends State<ToneCurve> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = widget.scheme ?? Theme.of(context).colorScheme;
-
     return LayoutBuilder(
       builder: (context, layout) {
         // Calculate layout sizes
@@ -99,7 +93,6 @@ class _ToneCurveState extends State<ToneCurve> {
                         painter: ToneCurvePainter(
                           model: widget.model,
                           style: widget.style,
-                          scheme: colorScheme,
                           holdAnchorIndex: value,
                         ),
                         size: Size.square(size),

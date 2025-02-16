@@ -1,13 +1,13 @@
 import 'dart:ui';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
+import '../core/normalized_point.dart';
+import '../core/tone_curve_model.dart';
 import 'anchor.dart';
 import 'interpolate_model.dart';
 import 'options.dart';
 import 'view_values.dart';
-import '../core/normalized_point.dart';
-import '../core/tone_curve_model.dart';
 
 /// DefaultToneCurveModel is a class that implements ToneCurveModel.
 /// Represents the default tone curve model.
@@ -16,9 +16,9 @@ class DefaultToneCurveModel extends ChangeNotifier implements ToneCurveModel {
     double curvature = 0.3,
     int outputPoints = 256,
     List<NormalizedPoint>? samplings,
-  })  : _curvature = curvature,
-        _outputPoints = outputPoints,
-        _samplings = samplings ?? [];
+  }) : _curvature = curvature,
+       _outputPoints = outputPoints,
+       _samplings = samplings ?? [];
 
   final List<NormalizedPoint> _anchors = [
     const NormalizedPoint(x: 0, y: 0),
@@ -74,10 +74,18 @@ class DefaultToneCurveModel extends ChangeNotifier implements ToneCurveModel {
       toCanvasX: baseSize / optionValues.rangeX,
       toCanvasY: baseSize / optionValues.rangeY,
     );
-    final offsetAnchors = anchorsValue
-        .map((e) => Anchor(options, baseSize * e.x, baseSize * (1 - e.y),
-            viewValues, optionValues))
-        .toList();
+    final offsetAnchors =
+        anchorsValue
+            .map(
+              (e) => Anchor(
+                options,
+                baseSize * e.x,
+                baseSize * (1 - e.y),
+                viewValues,
+                optionValues,
+              ),
+            )
+            .toList();
     final model = InterpolateModel(options, offsetAnchors);
     final modelResult = model.interpolate(
       optionValue: optionValues,
@@ -85,14 +93,15 @@ class DefaultToneCurveModel extends ChangeNotifier implements ToneCurveModel {
       toCanvasY: viewValues.toCanvasY,
     );
     final valueCounts = modelResult.outputY.length - 1;
-    final points = modelResult.outputY.indexed
-        .map(
-          (e) => NormalizedPoint(
-            x: clampDouble(e.$1 / valueCounts, 0, 1),
-            y: clampDouble(e.$2 / options.rangeY, 0, 1),
-          ),
-        )
-        .toList();
+    final points =
+        modelResult.outputY.indexed
+            .map(
+              (e) => NormalizedPoint(
+                x: clampDouble(e.$1 / valueCounts, 0, 1),
+                y: clampDouble(e.$2 / options.rangeY, 0, 1),
+              ),
+            )
+            .toList();
 
     // update
     if (anchors != null) {
