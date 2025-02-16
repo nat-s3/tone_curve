@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'tone_curve_model.dart';
 import 'tone_curve_style.dart';
@@ -8,7 +8,6 @@ class ToneCurvePainter extends CustomPainter {
   ToneCurvePainter({
     required this.model,
     required this.style,
-    required this.scheme,
     this.holdAnchorIndex,
   });
 
@@ -18,37 +17,39 @@ class ToneCurvePainter extends CustomPainter {
   /// The style of the tone curve.
   final ToneCurveStyle style;
 
-  /// The color scheme of the tone curve.
-  final ColorScheme scheme;
-
   /// The index of the anchor that is being held.
   final int? holdAnchorIndex;
 
   @override
   void paint(Canvas canvas, Size size) {
     // init painters
-    final backgroundPainter = Paint()
-      ..color = style.backgroundColor ?? scheme.surface
-      ..blendMode = BlendMode.srcOver;
-    final linePainter = Paint()
-      ..color = (style.gridColor ?? scheme.outline)
-      ..blendMode = BlendMode.srcOver
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1;
-    final fillPainter = Paint()
-      ..color = (style.curveFillColor ?? scheme.secondaryContainer)
-      ..blendMode = BlendMode.srcOver
-      ..style = PaintingStyle.fill;
-    final curvePainter = Paint()
-      ..color = (style.curveLineColor ?? scheme.primary)
-      ..blendMode = BlendMode.srcOver
-      ..strokeWidth = style.anchorRadius / 5
-      ..style = PaintingStyle.stroke;
-    final anchorPainter = Paint()
-      ..color = (style.anchorColor ?? scheme.primary)
-      ..blendMode = BlendMode.srcOver
-      ..strokeWidth = style.anchorRadius / 3
-      ..style = PaintingStyle.stroke;
+    final backgroundPainter =
+        Paint()
+          ..color = style.backgroundColor
+          ..blendMode = BlendMode.srcOver;
+    final linePainter =
+        Paint()
+          ..color = style.gridColor
+          ..blendMode = BlendMode.srcOver
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 1;
+    final fillPainter =
+        Paint()
+          ..color = style.curveFillColor
+          ..blendMode = BlendMode.srcOver
+          ..style = PaintingStyle.fill;
+    final curvePainter =
+        Paint()
+          ..color = style.curveLineColor
+          ..blendMode = BlendMode.srcOver
+          ..strokeWidth = style.anchorRadius / 5
+          ..style = PaintingStyle.stroke;
+    final anchorPainter =
+        Paint()
+          ..color = style.anchorColor
+          ..blendMode = BlendMode.srcOver
+          ..strokeWidth = style.anchorRadius / 3
+          ..style = PaintingStyle.stroke;
 
     // Draw the background
     if (style.drawBackground) {
@@ -59,11 +60,10 @@ class ToneCurvePainter extends CustomPainter {
     canvas.drawRect(Offset.zero & size, linePainter);
 
     // Draw the sampled values
-    final samplings = model.samplings
-        .map(
-          (e) => Offset(size.width * e.x, size.height * (1 - e.y)),
-        )
-        .toList();
+    final samplings =
+        model.samplings
+            .map((e) => Offset(size.width * e.x, size.height * (1 - e.y)))
+            .toList();
     if (samplings.isNotEmpty) {
       final path = Path();
       final linePath = Path();
@@ -91,9 +91,10 @@ class ToneCurvePainter extends CustomPainter {
 
     // Draw the grid lines
     if (style.drawGrid) {
-      final loopCount = (style.subGridSplits % 2 == 0)
-          ? style.subGridSplits + 1
-          : style.subGridSplits;
+      final loopCount =
+          (style.subGridSplits % 2 == 0)
+              ? style.subGridSplits + 1
+              : style.subGridSplits;
       final halfCount = (loopCount - 1) ~/ 2;
       for (var i = 1; i < loopCount; i++) {
         final percent = i / (loopCount - 1);
@@ -116,22 +117,30 @@ class ToneCurvePainter extends CustomPainter {
     // Draw the anchors
     for (final value in [...model.anchors].indexed) {
       if (value.$1 == holdAnchorIndex) {
-        anchorPainter.color = (style.anchorHoldColor ?? scheme.inversePrimary);
+        anchorPainter.color = style.anchorHoldColor;
       } else {
-        anchorPainter.color = (style.anchorColor ?? scheme.primary);
+        anchorPainter.color = style.anchorColor;
       }
 
-      canvas
-        ..drawCircle(
+      if (style.useAnchorOutline) {
+        canvas
+          ..drawCircle(
+            Offset(value.$2.x * size.width, (1 - value.$2.y) * size.height),
+            style.anchorRadius,
+            anchorPainter..style = PaintingStyle.stroke,
+          )
+          ..drawCircle(
+            Offset(value.$2.x * size.width, (1 - value.$2.y) * size.height),
+            style.anchorRadius / 5,
+            anchorPainter..style = PaintingStyle.fill,
+          );
+      } else {
+        canvas.drawCircle(
           Offset(value.$2.x * size.width, (1 - value.$2.y) * size.height),
           style.anchorRadius,
-          anchorPainter..style = PaintingStyle.stroke,
-        )
-        ..drawCircle(
-          Offset(value.$2.x * size.width, (1 - value.$2.y) * size.height),
-          style.anchorRadius / 5,
           anchorPainter..style = PaintingStyle.fill,
         );
+      }
     }
   }
 
