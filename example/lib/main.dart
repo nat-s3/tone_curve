@@ -31,13 +31,12 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       theme: ThemeData.from(colorScheme: schema, useMaterial3: true),
       darkTheme: ThemeData.from(colorScheme: schema, useMaterial3: true),
-      themeMode: schema.brightness == Brightness.light
-          ? ThemeMode.light
-          : ThemeMode.dark,
+      themeMode:
+          schema.brightness == Brightness.light
+              ? ThemeMode.light
+              : ThemeMode.dark,
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Tone Curve Sample'),
-        ),
+        appBar: AppBar(title: const Text('Tone Curve Sample')),
         body: Column(
           children: [
             // ToneCurve Widget
@@ -63,9 +62,7 @@ class _MyAppState extends State<MyApp> {
                 children: [
                   const Expanded(
                     flex: 1,
-                    child: Center(
-                      child: Text('Curvature'),
-                    ),
+                    child: Center(child: Text('Curvature')),
                   ),
                   Expanded(
                     flex: 4,
@@ -87,20 +84,16 @@ class _MyAppState extends State<MyApp> {
             Card(
               child: Row(
                 children: [
-                  const Expanded(
-                    flex: 1,
-                    child: Center(
-                      child: Text('Theme'),
-                    ),
-                  ),
+                  const Expanded(flex: 1, child: Center(child: Text('Theme'))),
                   IconButton(
                     onPressed: () {
                       setState(() {
                         schema = ColorScheme.fromSeed(
                           seedColor: seedColor,
-                          brightness: schema.brightness == Brightness.light
-                              ? Brightness.dark
-                              : Brightness.light,
+                          brightness:
+                              schema.brightness == Brightness.light
+                                  ? Brightness.dark
+                                  : Brightness.light,
                         );
                       });
                     },
@@ -114,37 +107,37 @@ class _MyAppState extends State<MyApp> {
                     flex: 4,
                     child: Center(
                       child: Wrap(
-                        children: <MaterialColor>[
-                          Colors.purple,
-                          Colors.red,
-                          Colors.pink,
-                          Colors.orange,
-                          Colors.yellow,
-                          Colors.green,
-                          Colors.teal,
-                          Colors.cyan,
-                          Colors.blue,
-                          Colors.indigo,
-                          Colors.blueGrey,
-                          Colors.brown,
-                          Colors.grey,
-                        ]
-                            .map(
-                              (e) => IconButton(
-                                onPressed: () => setState(
-                                  () {
-                                    seedColor = e;
-                                    schema = ColorScheme.fromSeed(
-                                      seedColor: seedColor,
-                                      brightness: schema.brightness,
-                                    );
-                                  },
-                                ),
-                                icon: const Icon(Icons.color_lens),
-                                color: e,
-                              ),
-                            )
-                            .toList(),
+                        children:
+                            <MaterialColor>[
+                                  Colors.purple,
+                                  Colors.red,
+                                  Colors.pink,
+                                  Colors.orange,
+                                  Colors.yellow,
+                                  Colors.green,
+                                  Colors.teal,
+                                  Colors.cyan,
+                                  Colors.blue,
+                                  Colors.indigo,
+                                  Colors.blueGrey,
+                                  Colors.brown,
+                                  Colors.grey,
+                                ]
+                                .map(
+                                  (e) => IconButton(
+                                    onPressed:
+                                        () => setState(() {
+                                          seedColor = e;
+                                          schema = ColorScheme.fromSeed(
+                                            seedColor: seedColor,
+                                            brightness: schema.brightness,
+                                          );
+                                        }),
+                                    icon: const Icon(Icons.color_lens),
+                                    color: e,
+                                  ),
+                                )
+                                .toList(),
                       ),
                     ),
                   ),
@@ -156,9 +149,7 @@ class _MyAppState extends State<MyApp> {
                 children: [
                   const Expanded(
                     flex: 1,
-                    child: Center(
-                      child: Text('AnchorRadius'),
-                    ),
+                    child: Center(child: Text('AnchorRadius')),
                   ),
                   Expanded(
                     flex: 4,
@@ -181,9 +172,7 @@ class _MyAppState extends State<MyApp> {
                 children: [
                   const Expanded(
                     flex: 1,
-                    child: Center(
-                      child: Text('SubGridSplits'),
-                    ),
+                    child: Center(child: Text('SubGridSplits')),
                   ),
                   Expanded(
                     flex: 4,
@@ -205,12 +194,7 @@ class _MyAppState extends State<MyApp> {
             Card(
               child: Row(
                 children: [
-                  const Expanded(
-                    flex: 1,
-                    child: Center(
-                      child: Text('styles'),
-                    ),
-                  ),
+                  const Expanded(flex: 1, child: Center(child: Text('styles'))),
                   Expanded(
                     flex: 4,
                     child: Center(
@@ -223,9 +207,13 @@ class _MyAppState extends State<MyApp> {
                               ButtonSegment(label: Text('Grid'), value: 0),
                               ButtonSegment(label: Text('Sub Grid'), value: 1),
                               ButtonSegment(
-                                  label: Text('Fill Curve'), value: 2),
+                                label: Text('Fill Curve'),
+                                value: 2,
+                              ),
                               ButtonSegment(
-                                  label: Text('Line Curve'), value: 3),
+                                label: Text('Line Curve'),
+                                value: 3,
+                              ),
                             ],
                             selected: {
                               if (drawGrid) 0,
