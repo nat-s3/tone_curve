@@ -32,9 +32,11 @@ doc/api/
 .flutter-plugins
 .flutter-plugins-dependencies
 
-.fvm
 .idea
 .vscode
 .metadata
 
 test
+
+# FVM Version Cache
+.fvm/
